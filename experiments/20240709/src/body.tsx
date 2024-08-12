@@ -12,13 +12,11 @@ export class AutomationBody extends ReactWidget {
     openFolder: (folder: string) => void,
     openPath: (folder: string) => void
   ) {
-    super();
     this._commands = commands;
     this._openFolder = openFolder;
     this._openPath = openPath;
     this._model = new AutomationModel();
 
-    this.id = 'crosscompute-automation';
     this.addClass('crosscompute-Automation');
 
     const title = this.title;

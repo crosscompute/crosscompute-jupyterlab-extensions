@@ -43,8 +43,6 @@ class LogsHandler(APIHandler):
 
     @tornado.web.authenticated
     async def get(self, log_id):
-        self.set_header('content-type', 'text/event-stream')
-        self.set_header('cache-control', 'no-cache')
         try:
             queue = QUEUE_BY_LOG_ID[log_id]
         except KeyError:
@@ -57,13 +55,6 @@ class LogsHandler(APIHandler):
                     del QUEUE_BY_LOG_ID[log_id]
                     return
             await tornado.gen.sleep(1)
-
-    async def publish(self, data):
-        try:
-            self.write('data: {}\n\n'.format(data))
-            await self.flush()
-        except tornado.iostream.StreamClosedError:
-            pass
 
 
 def setup_handlers(web_app):

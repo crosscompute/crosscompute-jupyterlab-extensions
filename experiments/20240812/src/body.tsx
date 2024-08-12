@@ -1,8 +1,5 @@
-import { ReactWidget } from '@jupyterlab/apputils';
 import { UseSignal } from '@jupyterlab/ui-components';
 import { ISignal, Signal } from '@lumino/signaling';
-import React from 'react';
-import { logoIcon } from './constant';
 import { requestAPI } from './handler';
 
 export class CrossComputePanel extends ReactWidget {
@@ -42,12 +39,8 @@ export class CrossComputePanel extends ReactWidget {
   };
 
   constructor(openPath: any, openFolder: any) {
-    super();
-    this.id = 'widget-id';
     this.addClass('jp-react-widget');
 
-    const title = this.title;
-    title.icon = logoIcon;
     this._curFile = '';
     this._curDir = '';
     this._config = {
@@ -136,4 +129,3 @@ export class CrossComputePanel extends ReactWidget {
   public get stateChanged(): ISignal<this, void> {
     return this._stateChanged;
   }
-}

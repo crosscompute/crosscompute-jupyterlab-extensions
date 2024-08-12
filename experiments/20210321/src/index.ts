@@ -1,15 +1,9 @@
-import {
-  JupyterFrontEnd,
-  JupyterFrontEndPlugin,
-} from '@jupyterlab/application';
 import { ICommandPalette } from '@jupyterlab/apputils';
 import { INotebookTracker } from '@jupyterlab/notebook';
-import { requestAPI } from './crosscompute-jupyterlab-extensions';
 import RunAutomationButton from './RunAutomationButton';
 import { LogDialogWidget } from './DialogWidget';
 
 function activate(
-  app: JupyterFrontEnd,
   tracker: INotebookTracker,
   palette: ICommandPalette
 ): void {
@@ -23,7 +17,6 @@ function activate(
         await context.save();
       }
 
-      // let pollingIntervalId: number;
       const formData = new FormData();
       formData.append('path', context.path);
       const d = await requestAPI<any>('prints', {
@@ -37,5 +30,3 @@ function activate(
   const runAutomationButton = new RunAutomationButton(app);
   app.docRegistry.addWidgetExtension('Notebook', runAutomationButton);
 }
-
-export default extension;

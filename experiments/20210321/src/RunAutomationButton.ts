@@ -39,14 +39,5 @@ class RunAutomationButton
     });
   }
 
-  /*
-  public set setToken(token: string) {
-    this._token = token;
-  }
-  */
-
   private _app: JupyterFrontEnd;
-  // private _token = '';
 }
-
-export default RunAutomationButton;

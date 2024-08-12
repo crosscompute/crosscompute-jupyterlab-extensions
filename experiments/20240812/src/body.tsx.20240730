@@ -1,11 +1,6 @@
-
-import { ReactWidget, UseSignal } from '@jupyterlab/apputils';
+import { UseSignal } from '@jupyterlab/apputils';
 
 import { Signal } from '@lumino/signaling';
-
-import { logoIcon } from './constant';
-
-import * as React from 'react';
 
 import { requestAPI } from './handler';
 
@@ -23,12 +18,6 @@ export class ExampleWidget extends ReactWidget {
     openFolder: (folder: string) => void,
     openPath: (folder: string) => void
   ) {
-    super();
-    this.id = 'widget-id';
-
-    const title = this.title;
-    title.icon = logoIcon;
-
     this._openFolder = openFolder;
     this._openPath = openPath;
 
@@ -76,13 +65,11 @@ export class ExampleWidget extends ReactWidget {
       this._openFolder(folder);
   }
     
-  render(): JSX.Element {
     return (
       <UseSignal signal={this._changed} initialSender={this}>
           {() => <div>Something goes here</div>}
       </UseSignal>
     );
-  }
 };
 
 // class AutomationBody extends ReactWidget {
@@ -94,7 +81,6 @@ export class ExampleWidget extends ReactWidget {
 //     super();
 //     this._openFolder = openFolder;
 //     this._openPath = openPath;
-//     this.id = 'crosscompute-automation';
 
 //     // Initialize model properties
 //     this._folder = null;

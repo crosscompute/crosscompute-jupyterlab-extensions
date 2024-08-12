@@ -1,8 +1,6 @@
 import {
   ILabShell,
   ILayoutRestorer,
-  JupyterFrontEnd,
-  JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
