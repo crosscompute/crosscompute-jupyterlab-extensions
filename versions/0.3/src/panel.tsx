@@ -10,27 +10,31 @@ import { CrossComputeModel } from './model';
 export class CrossComputePanel extends ReactWidget {
   constructor(
     openFolder: (folder: string) => void,
-    openPath: (path: string) => void,
+    openPath: (path: string) => void
   ) {
     super();
     this.id = 'crosscompute-panel';
     this.model = new CrossComputeModel();
-    this._eventSource = undefined;
+    this._socket = undefined;
 
     const { title } = this;
     title.icon = logoIcon;
   }
   protected onBeforeShow(msg: Message): void {
     const settings = ServerConnection.makeSettings();
-    const eventSource = new EventSource(URLExt.join(
-      settings.baseUrl, NAMESPACE, 'updates.json'));
-    this._eventSource = eventSource;
-    eventSource.onmessage = function(message) {
+    const uri = URLExt.join(settings.wsUrl, NAMESPACE, 'updates.json');
+    const socket = new WebSocket(uri);
+    this._socket = socket;
+    socket.onopen = function () {
+      console.log('whee');
+      socket.send('whee');
+    };
+    socket.onmessage = function (message) {
       console.log(message);
     };
   }
   protected onAfterHide(msg: Message): void {
-    this._eventSource?.close();
+    this._socket?.close();
   }
   render(): JSX.Element {
     return (
@@ -39,7 +43,7 @@ export class CrossComputePanel extends ReactWidget {
   }
 
   model: CrossComputeModel;
-  private _eventSource: EventSource | undefined;
+  private _socket: WebSocket | undefined;
 }
 
 const CrossComputePaper = ({

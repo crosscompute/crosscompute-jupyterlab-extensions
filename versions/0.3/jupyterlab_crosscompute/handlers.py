@@ -1,27 +1,25 @@
-import tornado
-from jupyter_server.base.handlers import APIHandler
+from jupyter_server.auth.decorator import ws_authenticated
+from jupyter_server.base.handlers import JupyterHandler
 from jupyter_server.utils import url_path_join
+from tornado.websocket import WebSocketHandler
 
 from .constants import NAMESPACE
 
 
-class UpdateHandler(APIHandler):
+class UpdateWebSocket(JupyterHandler, WebSocketHandler):
 
-    def initialize(self):
-        self.set_header('content-type', 'text/event-stream')
-        self.set_header('cache-control', 'no-cache')
+    @ws_authenticated
+    async def get(self, *args, **kwargs):
+        await super().get(*args, **kwargs)
 
-    @tornado.web.authenticated
-    async def get(self):
-        x = 0
-        try:
-            while True:
-                self.write(f'data: {x}\n\n')
-                await self.flush()
-                x += 1
-                await tornado.gen.sleep(1)
-        except tornado.iostream.StreamClosedError:
-            pass
+    def open(self):
+        print('open')
+
+    def on_message(self, message):
+        print('message', message)
+
+    def on_close(self):
+        print('close')
 
 
 def setup_handlers(web_app):
@@ -29,6 +27,6 @@ def setup_handlers(web_app):
     base_url = web_app.settings['base_url']
     updates_url = url_path_join(base_url, NAMESPACE, 'updates.json')
     handlers = [
-        (updates_url, UpdateHandler),
+        (updates_url, UpdateWebSocket),
     ]
     web_app.add_handlers(host_pattern, handlers)

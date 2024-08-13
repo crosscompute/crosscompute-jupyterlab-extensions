@@ -27,20 +27,29 @@ const plugin: JupyterFrontEndPlugin<void> = {
     const openFolder = (folder: string) => {
       fileBrowser.model.cd(folder);
       labShell.activateById(fileBrowser.id);
-    }
+    };
     const openPath = (path: string) => documentManager.openOrReveal(path);
 
     const panel: CrossComputePanel = new CrossComputePanel(
-      openFolder, openPath);
-    panel.disposed.connect(() => {
-      console.log('disposed');
+      openFolder,
+      openPath
+    );
+    labShell.currentPathChanged.connect((sender, args) => {
+      console.log('labShell', args);
+      // panel.model.updatePath(args['newValue']);
     });
-    shell.add(panel, 'right', { rank: 7000 });
+    if (fileBrowser) {
+      fileBrowser.model.pathChanged.connect((sender, args) => {
+        console.log('fileBrowser', args);
+        // panel.model.updatePath(args['newValue']);
+      });
+    }
 
+    shell.add(panel, 'right', { rank: 7000 });
     if (restorer) {
       restorer.add(panel, panel.id);
     }
-  },
+  }
 };
 
 export default plugin;
