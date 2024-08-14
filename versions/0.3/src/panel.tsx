@@ -1,10 +1,9 @@
 import React from 'react';
 import { Message } from '@lumino/messaging';
 import { ReactWidget } from '@jupyterlab/apputils';
-import { URLExt } from '@jupyterlab/coreutils';
-import { ServerConnection } from '@jupyterlab/services';
+import { UseSignal } from '@jupyterlab/ui-components';
 
-import { logoIcon, NAMESPACE } from './constant';
+import { logoIcon } from './constant';
 import { CrossComputeModel } from './model';
 
 export class CrossComputePanel extends ReactWidget {
@@ -15,43 +14,37 @@ export class CrossComputePanel extends ReactWidget {
     super();
     this.id = 'crosscompute-panel';
     this.model = new CrossComputeModel();
-    this._socket = undefined;
+    this.addClass('jp-CrossComputePanel');
 
     const { title } = this;
     title.icon = logoIcon;
   }
   protected onBeforeShow(msg: Message): void {
-    const settings = ServerConnection.makeSettings();
-    const uri = URLExt.join(settings.wsUrl, NAMESPACE, 'updates.json');
-    const socket = new WebSocket(uri);
-    this._socket = socket;
-    socket.onopen = function () {
-      console.log('whee');
-      socket.send('whee');
-    };
-    socket.onmessage = function (message) {
-      console.log(message);
-    };
+    this.model.connect();
   }
   protected onAfterHide(msg: Message): void {
-    this._socket?.close();
+    this.model.disconnect();
   }
   render(): JSX.Element {
     return (
-      <CrossComputePaper />
+      <UseSignal signal={this.model.changed}>
+        {(): JSX.Element => <CrossComputePaper model={this.model} />}
+      </UseSignal>
     );
   }
 
   model: CrossComputeModel;
-  private _socket: WebSocket | undefined;
 }
 
 const CrossComputePaper = ({
+  model
 }: {
+  model: CrossComputeModel;
 }): JSX.Element => {
   return (
     <div>
-      whee!
+      <div>Source: {model.sourceName}</div>
+      <div>Path: {model.path}</div>
     </div>
   );
 };

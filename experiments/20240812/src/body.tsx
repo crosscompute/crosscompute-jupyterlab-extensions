@@ -1,20 +1,8 @@
-import { UseSignal } from '@jupyterlab/ui-components';
 import { ISignal, Signal } from '@lumino/signaling';
 import { requestAPI } from './handler';
 
 export class CrossComputePanel extends ReactWidget {
-  private _curFile: string;
-  private _curDir: string;
   private _config: { name: string; version: string };
-  private _cache: any;
-  private _stateChanged: Signal<this, void>;
-  private _isRunning: boolean;
-  private _log: string;
-  private _timer: any;
-
-  private _openPath: any;
-  private _openFolder: any;
-
   private _onClickLaunch = () => {
     this._isRunning = true;
     // TODO: send launch request to launch endpoint
@@ -90,12 +78,6 @@ export class CrossComputePanel extends ReactWidget {
 
   // updatePath(curFile: string, curDir: string) {
   updatePath(currentPath: string) {
-    // TODO: Update front end using cache
-    /*
-    this._curFile = curFile;
-    this._curDir = curDir;
-
-    */
     this._config = this._cache[currentPath] || {};
     this._stateChanged.emit();
 
