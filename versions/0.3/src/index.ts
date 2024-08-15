@@ -7,7 +7,6 @@ import {
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { IDefaultFileBrowser } from '@jupyterlab/filebrowser';
 
-import { S_FILEBROWSER, S_LABSHELL } from './constant';
 import { CrossComputePanel } from './panel';
 
 const plugin: JupyterFrontEndPlugin<void> = {
@@ -37,17 +36,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
     if (restorer) {
       restorer.add(panel, panel.id);
     }
-    labShell.activeChanged.connect((sender, args) => {
-      const shellPath = labShell.currentPath;
-      if (args.newValue && shellPath) {
-        panel.model.update(S_LABSHELL, shellPath);
-      } else {
-        panel.model.update(S_FILEBROWSER, fileBrowser.model.path);
-      }
+    labShell.currentPathChanged.connect((sender, args) => {
+      panel.model.labShellPath = args.newValue;
     });
     if (fileBrowser) {
       fileBrowser.model.pathChanged.connect((sender, args) => {
-        panel.model.update(S_FILEBROWSER, args.newValue);
+        panel.model.fileBrowserFolder = args.newValue;
       });
     }
   }

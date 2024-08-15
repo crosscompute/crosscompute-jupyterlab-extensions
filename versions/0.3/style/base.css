@@ -1,5 +1,5 @@
-/*
-    See the JupyterLab Developer Guide for useful CSS Patterns:
-
-    https://jupyterlab.readthedocs.io/en/stable/developer/css.html
-*/
+.jp-CrossComputePanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

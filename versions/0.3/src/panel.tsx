@@ -28,7 +28,13 @@ export class CrossComputePanel extends ReactWidget {
   render(): JSX.Element {
     return (
       <UseSignal signal={this.model.changed}>
-        {(): JSX.Element => <CrossComputePaper model={this.model} />}
+        {(): JSX.Element => (
+          <>
+            <LabShellInformation model={this.model} />
+            <FileBrowserInformation model={this.model} />
+            <FileBrowserHistory model={this.model} />
+          </>
+        )}
       </UseSignal>
     );
   }
@@ -36,15 +42,26 @@ export class CrossComputePanel extends ReactWidget {
   model: CrossComputeModel;
 }
 
-const CrossComputePaper = ({
+const LabShellInformation = ({
   model
 }: {
   model: CrossComputeModel;
 }): JSX.Element => {
-  return (
-    <div>
-      <div>Source: {model.sourceName}</div>
-      <div>Path: {model.path}</div>
-    </div>
-  );
+  return <div>{model.labShellPath}</div>;
+};
+
+const FileBrowserInformation = ({
+  model
+}: {
+  model: CrossComputeModel;
+}): JSX.Element => {
+  return <div>{model.fileBrowserFolder}</div>;
+};
+
+const FileBrowserHistory = ({
+  model
+}: {
+  model: CrossComputeModel;
+}): JSX.Element => {
+  return <div>file browser history</div>;
 };
