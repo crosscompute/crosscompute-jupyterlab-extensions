@@ -23,8 +23,8 @@ class UpdateWebSocket(JupyterHandler, WebSocketHandler):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._current_path = None
-        self._current_folder = None
+        self._lab_shell_path = None
+        self._file_browser_folder = None
         self._periodic_callback = PeriodicCallback(
             self.send_update, 1000)
         self._information_by_path_by_folder = InfiniteDefaultDict()
@@ -38,8 +38,8 @@ class UpdateWebSocket(JupyterHandler, WebSocketHandler):
 
     def on_message(self, message):
         d = json.loads(message)
-        self._current_path = Path(d['currentPath'])
-        self._current_folder = Path(d['currentFolder'])
+        self._lab_shell_path = Path(d['labShellPath'])
+        self._file_browser_folder = Path(d['fileBrowserFolder'])
 
     def on_close(self):
         self._periodic_callback.stop()
@@ -50,11 +50,12 @@ class UpdateWebSocket(JupyterHandler, WebSocketHandler):
         self._information_by_path_by_folder[inner_key][outer_key] = information
 
     async def send_update(self):
-        if self._current_path is None:
+        if self._lab_shell_path is None:
             return
+        # TODO: lab shell path
         # look in folders until there is one with configuration
         # for each configuration file, load tools and/or tool name
-        folder = self._current_folder
+        folder = self._file_browser_folder
         for suffix in SUFFIXES:
             for path in folder.glob('*' + suffix):
                 try:
@@ -71,8 +72,8 @@ class UpdateWebSocket(JupyterHandler, WebSocketHandler):
         i = self._information_by_path_by_folder
         k = str(folder)
         await self.write_message(json.dumps({
-            'folder': k,
-            'folderInformation': {
+            'fileBrowserFolder': k,
+            'fileBrowserFolderInformation': {
                 'informationByPath': i[k],
             },
         }))

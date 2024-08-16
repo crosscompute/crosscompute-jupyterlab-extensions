@@ -17,19 +17,19 @@ export class CrossComputeModel {
     };
     socket.onmessage = message => {
       const d = JSON.parse(message.data);
-      const folder = d.folder,
-        folderInformation = d.folderInformation;
-      if (folder === this._currentFolder) {
-        this._currentFolderInformation = folderInformation;
+      const folder = d.fileBrowserFolder,
+        folderInformation = d.fileBrowserFolderInformation;
+      if (folder === this._fileBrowserFolder) {
+        this._fileBrowserFolderInformation = folderInformation;
         this.changed.emit();
       }
-      this._currentFolderInformationCache[folder] = folderInformation;
+      this._fileBrowserFolderInformationCache[folder] = folderInformation;
     };
     this._socket = socket;
   }
   private _update(): void {
-    this._currentFolderInformation =
-      this._currentFolderInformationCache[this._currentFolder] || {};
+    this._fileBrowserFolderInformation =
+      this._fileBrowserFolderInformationCache[this._fileBrowserFolder] || {};
     this.changed.emit();
     this._relay();
   }
@@ -40,39 +40,39 @@ export class CrossComputeModel {
       if (socket?.readyState === WebSocket.OPEN) {
         socket.send(
           JSON.stringify({
-            currentPath: this._currentPath,
-            currentFolder: this._currentFolder
+            labShellPath: this._labShellPath,
+            fileBrowserFolder: this._fileBrowserFolder
           })
         );
       }
     }, 10);
   }
-  get currentPath() {
-    return this._currentPath;
+  get labShellPath() {
+    return this._labShellPath;
   }
-  set currentPath(path: string) {
-    this._currentPath = path;
+  set labShellPath(path: string) {
+    this._labShellPath = path;
     this._update();
   }
-  get currentFolder() {
-    return this._currentFolder;
+  get fileBrowserFolder() {
+    return this._fileBrowserFolder;
   }
-  set currentFolder(folder: string) {
-    this._currentFolder = folder || '.';
+  set fileBrowserFolder(folder: string) {
+    this._fileBrowserFolder = folder || '.';
     this._update();
   }
-  get currentFolderInformation() {
-    return this._currentFolderInformation;
+  get fileBrowserFolderInformation() {
+    return this._fileBrowserFolderInformation;
   }
   disconnect(): void {
     clearTimeout(this._timeout);
     this._socket?.close();
   }
   changed = new Signal<this, void>(this);
-  private _currentPath: string = '';
-  private _currentFolder: string = '.';
-  private _currentFolderInformation: any = {};
-  private _currentFolderInformationCache: any = {};
+  private _labShellPath: string = '';
+  private _fileBrowserFolder: string = '.';
+  private _fileBrowserFolderInformation: any = {};
+  private _fileBrowserFolderInformationCache: any = {};
   private _socket: WebSocket | undefined = undefined;
   private _timeout: number = 0;
 }

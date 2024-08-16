@@ -9,7 +9,7 @@
   width: 100%;
 }
 
-.jp-crosscompute-CurrentFolderInformation {
+.jp-crosscompute-FileBrowserFolderInformation {
   display: flex;
   flex-direction: column;
   flex-grow: 1;

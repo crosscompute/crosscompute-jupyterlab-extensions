@@ -32,11 +32,11 @@ export class CrossComputePanel extends ReactWidget {
       <UseSignal signal={this.model.changed}>
         {(): JSX.Element => (
           <>
-            <CurrentPathInformation
+            <LabShellPathInformation
               model={this.model}
               openFolder={this._openFolder}
             />
-            <CurrentFolderInformation model={this.model} />
+            <FileBrowserFolderInformation model={this.model} />
             <ConfigurationFolderHistory model={this.model} />
           </>
         )}
@@ -49,40 +49,40 @@ export class CrossComputePanel extends ReactWidget {
   _openPath: (path: string) => void;
 }
 
-const CurrentPathInformation = ({
+const LabShellPathInformation = ({
   model,
   openFolder
 }: {
   model: CrossComputeModel;
   openFolder: (folder: string) => void;
 }) => {
-  const { currentPath } = model;
-  if (!currentPath) {
+  const { labShellPath } = model;
+  if (!labShellPath) {
     return null;
   }
   return (
     <div>
-      <div>Current Path</div>
-      <div>{currentPath}</div>
+      <div>Lab Shell Path</div>
+      <div>{labShellPath}</div>
     </div>
   );
 };
 
-const CurrentFolderInformation = ({ model }: { model: CrossComputeModel }) => {
-  const { currentFolder, currentFolderInformation } = model;
-  const { informationByPath } = currentFolderInformation;
+const FileBrowserFolderInformation = ({ model }: { model: CrossComputeModel }) => {
+  const { fileBrowserFolder, fileBrowserFolderInformation } = model;
+  const { informationByPath } = fileBrowserFolderInformation;
   return (
-    <div className="jp-crosscompute-CurrentFolderInformation">
+    <div className="jp-crosscompute-FileBrowserFolderInformation">
       <div>
-        <div>Current Folder</div>
-        <div>{currentFolder}</div>
+        <div>File Browser Folder</div>
+        <div>{fileBrowserFolder}</div>
       </div>
-      <CurrentFolderDetail informationByPath={informationByPath} />
+      <FileBrowserFolderDetail informationByPath={informationByPath} />
     </div>
   );
 };
 
-const CurrentFolderDetail = ({
+const FileBrowserFolderDetail = ({
   informationByPath
 }: {
   informationByPath: any;
@@ -112,7 +112,7 @@ const CurrentFolderDetail = ({
 };
 
 /*
-const FolderError = ({
+const FileBrowserFolderError = ({
 }: {
 }) => {
 };
