@@ -10,73 +10,69 @@ export class CrossComputeModel {
     const uri = URLExt.join(settings.wsUrl, NAMESPACE, 'updates.json');
     const socket = new WebSocket(uri);
     socket.onopen = () => {
-      // socket.send(this._path);
+      this._relay();
+    };
+    socket.onerror = event => {
+      console.error(event);
     };
     socket.onmessage = message => {
-      /*
       const d = JSON.parse(message.data);
-      if (d.path === this._path) {
-        this._configuration = d;
+      const folder = d.folder,
+        folderInformation = d.folderInformation;
+      if (folder === this._currentFolder) {
+        this._currentFolderInformation = folderInformation;
         this.changed.emit();
       }
-      this._cache[d.path] = d;
-      */
+      this._currentFolderInformationCache[folder] = folderInformation;
     };
     this._socket = socket;
   }
   private _update(): void {
+    this._currentFolderInformation =
+      this._currentFolderInformationCache[this._currentFolder] || {};
+    this.changed.emit();
+    this._relay();
+  }
+  private _relay(): void {
     clearTimeout(this._timeout);
     this._timeout = window.setTimeout(() => {
-      console.log('update');
-      this.changed.emit();
-    }, 10);
-  }
-  get fileBrowserFolder() {
-    return this._fileBrowserFolder;
-  }
-  set fileBrowserFolder(folder: string) {
-    console.log('fileBrowserFolder', folder);
-    this._fileBrowserFolder = folder;
-    this._update();
-  }
-  get labShellPath() {
-    return this._labShellPath;
-  }
-  set labShellPath(path: string) {
-    console.log('labShellPath', path);
-    this._labShellPath = path;
-    this._update();
-  }
-  /*
-  update(sourceName: string, newPath: string): void {
-    this._configuration = this._cache[newPath] || {};
-    this.changed.emit();
-
-    const socket = this._socket;
-    this._timeout = window.setTimeout(() => {
+      const socket = this._socket;
       if (socket?.readyState === WebSocket.OPEN) {
-        socket.send(newPath);
+        socket.send(
+          JSON.stringify({
+            currentPath: this._currentPath,
+            currentFolder: this._currentFolder
+          })
+        );
       }
     }, 10);
-
-    this._path = newPath;
   }
-  */
+  get currentPath() {
+    return this._currentPath;
+  }
+  set currentPath(path: string) {
+    this._currentPath = path;
+    this._update();
+  }
+  get currentFolder() {
+    return this._currentFolder;
+  }
+  set currentFolder(folder: string) {
+    this._currentFolder = folder || '.';
+    this._update();
+  }
+  get currentFolderInformation() {
+    return this._currentFolderInformation;
+  }
   disconnect(): void {
+    clearTimeout(this._timeout);
     this._socket?.close();
   }
-  /*
-  get configuration() {
-    return this._configuration;
-  }
-  */
   changed = new Signal<this, void>(this);
-  private _fileBrowserFolder: string = '';
-  private _labShellPath: string = '';
-  /*
-  private _cache: any = {};
-  private _configuration: any = {};
-  */
+  private _currentPath: string = '';
+  private _currentFolder: string = '.';
+  private _currentFolderInformation: any = {};
+  private _currentFolderInformationCache: any = {};
   private _socket: WebSocket | undefined = undefined;
   private _timeout: number = 0;
 }

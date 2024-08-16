@@ -37,11 +37,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
       restorer.add(panel, panel.id);
     }
     labShell.currentPathChanged.connect((sender, args) => {
-      panel.model.labShellPath = args.newValue;
+      panel.model.currentPath = args.newValue;
     });
     if (fileBrowser) {
       fileBrowser.model.pathChanged.connect((sender, args) => {
-        panel.model.fileBrowserFolder = args.newValue;
+        panel.model.currentFolder = args.newValue;
       });
     }
   }

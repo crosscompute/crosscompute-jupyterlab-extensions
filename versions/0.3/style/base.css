@@ -1,5 +1,17 @@
-.jp-CrossComputePanel {
+#crosscompute-panel {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 8px;
+}
+
+#crosscompute-panel select {
+  width: 100%;
+}
+
+.jp-crosscompute-CurrentFolderInformation {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 8px;
 }

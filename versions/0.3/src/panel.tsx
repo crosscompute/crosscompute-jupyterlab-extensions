@@ -14,7 +14,6 @@ export class CrossComputePanel extends ReactWidget {
     super();
     this.id = 'crosscompute-panel';
     this.model = new CrossComputeModel();
-    this.addClass('jp-CrossComputePanel');
 
     const { title } = this;
     title.icon = logoIcon;
@@ -33,10 +32,12 @@ export class CrossComputePanel extends ReactWidget {
       <UseSignal signal={this.model.changed}>
         {(): JSX.Element => (
           <>
-            <LabShellInformation model={this.model}
-              openFolder={this._openFolder} />
-            <FileBrowserInformation model={this.model} />
-            <FileBrowserHistory model={this.model} />
+            <CurrentPathInformation
+              model={this.model}
+              openFolder={this._openFolder}
+            />
+            <CurrentFolderInformation model={this.model} />
+            <ConfigurationFolderHistory model={this.model} />
           </>
         )}
       </UseSignal>
@@ -48,34 +49,79 @@ export class CrossComputePanel extends ReactWidget {
   _openPath: (path: string) => void;
 }
 
-const LabShellInformation = ({
+const CurrentPathInformation = ({
   model,
   openFolder
 }: {
   model: CrossComputeModel;
   openFolder: (folder: string) => void;
-}): JSX.Element => {
-  const modelPath = model.labShellPath;
-  const folder = modelPath.split('/');
-  const fileName = folder.pop();
-  const joinedPath = folder.join('/');
-
-  console.log(joinedPath, fileName);
-  return <div><a onClick={() => {openFolder(joinedPath)}}>{joinedPath}</a>/{fileName}</div>;
+}) => {
+  const { currentPath } = model;
+  if (!currentPath) {
+    return null;
+  }
+  return (
+    <div>
+      <div>Current Path</div>
+      <div>{currentPath}</div>
+    </div>
+  );
 };
 
-const FileBrowserInformation = ({
+const CurrentFolderInformation = ({ model }: { model: CrossComputeModel }) => {
+  const { currentFolder, currentFolderInformation } = model;
+  const { informationByPath } = currentFolderInformation;
+  return (
+    <div className="jp-crosscompute-CurrentFolderInformation">
+      <div>
+        <div>Current Folder</div>
+        <div>{currentFolder}</div>
+      </div>
+      <CurrentFolderDetail informationByPath={informationByPath} />
+    </div>
+  );
+};
+
+const CurrentFolderDetail = ({
+  informationByPath
+}: {
+  informationByPath: any;
+}) => {
+  if (informationByPath === undefined) {
+    return null;
+  }
+  const configurationPaths = Object.keys(informationByPath);
+  return (
+    <>
+      <div>
+        <div>Configuration Path</div>
+        <div>
+          {configurationPaths.length === 1 ? (
+            configurationPaths[0]
+          ) : (
+            <select>
+              {configurationPaths.map(path => (
+                <option>{path}</option>
+              ))}
+            </select>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
+/*
+const FolderError = ({
+}: {
+}) => {
+};
+*/
+
+const ConfigurationFolderHistory = ({
   model
 }: {
   model: CrossComputeModel;
-}): JSX.Element => {
-  return <div>{model.fileBrowserFolder}</div>;
-};
-
-const FileBrowserHistory = ({
-  model
-}: {
-  model: CrossComputeModel;
-}): JSX.Element => {
-  return <div>file browser history</div>;
+}) => {
+  return <div>tool folder history</div>;
 };
