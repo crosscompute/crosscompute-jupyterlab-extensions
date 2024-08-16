@@ -47,7 +47,12 @@ const LabShellInformation = ({
 }: {
   model: CrossComputeModel;
 }): JSX.Element => {
-  return <div>{model.labShellPath}</div>;
+  const modelPath = model.labShellPath;
+  const [parent, children] = modelPath.split('/').slice(-2);
+
+
+  console.log(parent, children);
+  return <div>{modelPath}</div>;
 };
 
 const FileBrowserInformation = ({
