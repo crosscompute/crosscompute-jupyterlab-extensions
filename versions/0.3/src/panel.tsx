@@ -56,9 +56,12 @@ const LabShellInformation = ({
   openFolder: (folder: string) => void;
 }): JSX.Element => {
   const modelPath = model.labShellPath;
-  const folder = modelPath.split('/').slice(0, -1).join('/');
-  const fileName = modelPath.split('/')[-1];
-  return <div><a onClick={() => {openFolder(folder)}}>{folder}</a>/{fileName}</div>;
+  const folder = modelPath.split('/');
+  const fileName = folder.pop();
+  const joinedPath = folder.join('/');
+
+  console.log(joinedPath, fileName);
+  return <div><a onClick={() => {openFolder(joinedPath)}}>{joinedPath}</a>/{fileName}</div>;
 };
 
 const FileBrowserInformation = ({
