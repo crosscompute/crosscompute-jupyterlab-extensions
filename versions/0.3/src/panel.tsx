@@ -18,6 +18,9 @@ export class CrossComputePanel extends ReactWidget {
 
     const { title } = this;
     title.icon = logoIcon;
+
+    this._openFolder = openFolder;
+    this._openPath = openPath;
   }
   protected onBeforeShow(msg: Message): void {
     this.model.connect();
@@ -30,7 +33,8 @@ export class CrossComputePanel extends ReactWidget {
       <UseSignal signal={this.model.changed}>
         {(): JSX.Element => (
           <>
-            <LabShellInformation model={this.model} />
+            <LabShellInformation model={this.model}
+              openFolder={this._openFolder} />
             <FileBrowserInformation model={this.model} />
             <FileBrowserHistory model={this.model} />
           </>
@@ -40,19 +44,21 @@ export class CrossComputePanel extends ReactWidget {
   }
 
   model: CrossComputeModel;
+  _openFolder: (folder: string) => void;
+  _openPath: (path: string) => void;
 }
 
 const LabShellInformation = ({
-  model
+  model,
+  openFolder
 }: {
   model: CrossComputeModel;
+  openFolder: (folder: string) => void;
 }): JSX.Element => {
   const modelPath = model.labShellPath;
-  const [parent, children] = modelPath.split('/').slice(-2);
-
-
-  console.log(parent, children);
-  return <div>{modelPath}</div>;
+  const folder = modelPath.split('/').slice(0, -1).join('/');
+  const fileName = modelPath.split('/')[-1];
+  return <div><a onClick={() => {openFolder(folder)}}>{folder}</a>/{fileName}</div>;
 };
 
 const FileBrowserInformation = ({
