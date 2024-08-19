@@ -85,27 +85,18 @@ const FileBrowserFolderInformation = ({
   );
 };
 
-const FileBrowserFolderDetail = ({
-  model
-}: {
-  model: CrossComputeModel;
-}) => {
-  const { fileBrowserFolderInformation } = model;
-  const { informationByPath } = fileBrowserFolderInformation;
-  if (
-    informationByPath === undefined ||
-    !Object.keys(informationByPath).length
-  ) {
+const FileBrowserFolderDetail = ({ model }: { model: CrossComputeModel }) => {
+  const informationByPath = model.fileBrowserFolderInformation;
+  console.log('informationByPath', informationByPath);
+  if (!Object.keys(informationByPath).length) {
     return null;
   }
   const folder = model.fileBrowserFolder;
-  // restore selected using current folder in model
   const configurationPaths = Object.keys(informationByPath);
-  const configurationPath = model.configurationPathByFolder[folder] || configurationPaths[0];
-  // const [selected, setSelected] = useState(configurationPaths[0]);
-  /*
-  setSelected
-   */
+  let configurationPath = model.configurationPathByFolder[folder];
+  if (!configurationPaths.includes(configurationPath)) {
+    configurationPath = configurationPaths[0];
+  }
   return (
     <>
       <div>
@@ -114,11 +105,12 @@ const FileBrowserFolderDetail = ({
           {configurationPaths.length === 1 ? (
             configurationPaths[0]
           ) : (
-            <select value={configurationPath} onChange={(e) => {
-              model.updateConfigurationPath(folder, e.target.value);
-              // setSelected(e.target.value)
-              // TODO: store selected based on current folder
-            }}>
+            <select
+              value={configurationPath}
+              onChange={e => {
+                model.updateConfigurationPath(folder, e.target.value);
+              }}
+            >
               {configurationPaths.map(path => (
                 <option>{path}</option>
               ))}

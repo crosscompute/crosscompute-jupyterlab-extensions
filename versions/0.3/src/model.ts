@@ -21,6 +21,7 @@ export class CrossComputeModel {
         folderInformation = d.fileBrowserFolderInformation;
       if (folder === this._fileBrowserFolder) {
         this._fileBrowserFolderInformation = folderInformation;
+        console.log('folderInformation', folderInformation);
         this.changed.emit();
       }
       this._fileBrowserFolderInformationCache[folder] = folderInformation;

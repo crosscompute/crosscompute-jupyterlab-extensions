@@ -51,6 +51,7 @@ class UpdateWebSocket(JupyterHandler, WebSocketHandler):
         # look in folders until there is one with configuration
         # for each configuration file, load tools and/or tool name
         folder = self._file_browser_folder
+        information_by_path = {}
         for suffix in SUFFIXES:
             for path in folder.glob('*' + suffix):
                 try:
@@ -63,20 +64,11 @@ class UpdateWebSocket(JupyterHandler, WebSocketHandler):
                     name = raw_configuration.get('name', '')
                     version = raw_configuration.get('version', '')
                     d = {'name': name, 'version': version}
-                self.save_information(folder, path, d)
-        i = self._information_by_path_by_folder
-        k = str(folder)
+                information_by_path[str(path.relative_to(folder))] = d
         await self.write_message(json.dumps({
-            'fileBrowserFolder': k,
-            'fileBrowserFolderInformation': {
-                'informationByPath': i[k],
-            },
-        }))
-
-    def save_information(self, folder, path, information):
-        inner_key = str(folder)
-        outer_key = str(path.relative_to(folder))
-        self._information_by_path_by_folder[inner_key][outer_key] = information
+            'fileBrowserFolder': str(folder),
+            'fileBrowserFolderInformation': information_by_path}))
+        self._information_by_path_by_folder[str(folder)] = information_by_path
 
 
 def setup_handlers(web_app):
