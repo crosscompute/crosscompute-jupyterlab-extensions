@@ -64,6 +64,13 @@ export class CrossComputeModel {
   get fileBrowserFolderInformation() {
     return this._fileBrowserFolderInformation;
   }
+  get configurationPathByFolder() {
+    return this._configurationPathByFolder;
+  }
+  updateConfigurationPath(folder: string, path: string) {
+    this._configurationPathByFolder[folder] = path;
+    this.changed.emit();
+  }
   disconnect(): void {
     clearTimeout(this._timeout);
     this._socket?.close();
@@ -73,6 +80,7 @@ export class CrossComputeModel {
   private _fileBrowserFolder: string = '.';
   private _fileBrowserFolderInformation: any = {};
   private _fileBrowserFolderInformationCache: any = {};
+  private _configurationPathByFolder: any = {};
   private _socket: WebSocket | undefined = undefined;
   private _timeout: number = 0;
 }

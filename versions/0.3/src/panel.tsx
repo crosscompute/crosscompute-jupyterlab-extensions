@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Message } from '@lumino/messaging';
 import { ReactWidget } from '@jupyterlab/apputils';
 import { UseSignal } from '@jupyterlab/ui-components';
@@ -68,33 +68,44 @@ const LabShellPathInformation = ({
   );
 };
 
-const FileBrowserFolderInformation = ({ model }: { model: CrossComputeModel }) => {
-  const { fileBrowserFolder, fileBrowserFolderInformation } = model;
-  const { informationByPath } = fileBrowserFolderInformation;
+const FileBrowserFolderInformation = ({
+  model
+}: {
+  model: CrossComputeModel;
+}) => {
+  const { fileBrowserFolder } = model;
   return (
     <div className="jp-crosscompute-FileBrowserFolderInformation">
       <div>
         <div>File Browser Folder</div>
         <div>{fileBrowserFolder}</div>
       </div>
-      <FileBrowserFolderDetail informationByPath={informationByPath} />
+      <FileBrowserFolderDetail model={model} />
     </div>
   );
 };
 
 const FileBrowserFolderDetail = ({
-  informationByPath
+  model
 }: {
-  informationByPath: any;
+  model: CrossComputeModel;
 }) => {
+  const { fileBrowserFolderInformation } = model;
+  const { informationByPath } = fileBrowserFolderInformation;
   if (
     informationByPath === undefined ||
     !Object.keys(informationByPath).length
   ) {
     return null;
   }
+  const folder = model.fileBrowserFolder;
+  // restore selected using current folder in model
   const configurationPaths = Object.keys(informationByPath);
-  const [selected, setSelected] = useState(configurationPaths[0]);
+  const configurationPath = model.configurationPathByFolder[folder] || configurationPaths[0];
+  // const [selected, setSelected] = useState(configurationPaths[0]);
+  /*
+  setSelected
+   */
   return (
     <>
       <div>
@@ -103,7 +114,11 @@ const FileBrowserFolderDetail = ({
           {configurationPaths.length === 1 ? (
             configurationPaths[0]
           ) : (
-            <select value={selected} onChange={(e) => setSelected(e.target.value)}>
+            <select value={configurationPath} onChange={(e) => {
+              model.updateConfigurationPath(folder, e.target.value);
+              // setSelected(e.target.value)
+              // TODO: store selected based on current folder
+            }}>
               {configurationPaths.map(path => (
                 <option>{path}</option>
               ))}
@@ -117,8 +132,7 @@ const FileBrowserFolderDetail = ({
           {configurationPaths.length === 1 ? (
             informationByPath[configurationPaths[0]].name
           ) : (
-            informationByPath[selected].name
-            
+            informationByPath[configurationPath].name
           )}
         </div>
       </div>
@@ -128,7 +142,7 @@ const FileBrowserFolderDetail = ({
           {configurationPaths.length === 1 ? (
             informationByPath[configurationPaths[0]].version
           ) : (
-            informationByPath[selected].version
+            informationByPath[configurationPath].version
           )}
         </div>
       </div>
