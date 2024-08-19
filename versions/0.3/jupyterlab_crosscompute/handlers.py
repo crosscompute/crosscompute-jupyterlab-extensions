@@ -44,11 +44,6 @@ class UpdateWebSocket(JupyterHandler, WebSocketHandler):
     def on_close(self):
         self._periodic_callback.stop()
 
-    def save_information(self, folder, path, information):
-        inner_key = str(folder)
-        outer_key = str(path.relative_to(folder))
-        self._information_by_path_by_folder[inner_key][outer_key] = information
-
     async def send_update(self):
         if self._lab_shell_path is None:
             return
@@ -77,6 +72,11 @@ class UpdateWebSocket(JupyterHandler, WebSocketHandler):
                 'informationByPath': i[k],
             },
         }))
+
+    def save_information(self, folder, path, information):
+        inner_key = str(folder)
+        outer_key = str(path.relative_to(folder))
+        self._information_by_path_by_folder[inner_key][outer_key] = information
 
 
 def setup_handlers(web_app):
