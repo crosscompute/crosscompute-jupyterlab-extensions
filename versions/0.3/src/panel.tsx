@@ -107,6 +107,29 @@ const FileBrowserFolderDetail = ({
           )}
         </div>
       </div>
+      <div>
+        <div>Configuration Name</div>
+        <div>
+          Name:
+          {configurationPaths.length === 1 ? (
+            informationByPath[configurationPaths[0]].name
+          ) : (
+              {/* {configurationPaths.map(path => (
+                <option>{path}</option>
+              ))} */}
+          )}
+        </div>
+        <div>
+          Version:
+          {configurationPaths.length === 1 ? (
+            informationByPath[configurationPaths[0]].version
+          ) : (
+              {/* {configurationPaths.map(path => (
+                <option>{path}</option>
+              ))} */}
+          )}
+        </div>
+      </div>
     </>
   );
 };
