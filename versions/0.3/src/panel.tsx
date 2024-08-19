@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Message } from '@lumino/messaging';
 import { ReactWidget } from '@jupyterlab/apputils';
 import { UseSignal } from '@jupyterlab/ui-components';
@@ -94,6 +94,7 @@ const FileBrowserFolderDetail = ({
     return null;
   }
   const configurationPaths = Object.keys(informationByPath);
+  const [selected, setSelected] = useState(configurationPaths[0]);
   return (
     <>
       <div>
@@ -102,7 +103,7 @@ const FileBrowserFolderDetail = ({
           {configurationPaths.length === 1 ? (
             configurationPaths[0]
           ) : (
-            <select>
+            <select value={selected} onChange={(e) => setSelected(e.target.value)}>
               {configurationPaths.map(path => (
                 <option>{path}</option>
               ))}
@@ -116,7 +117,8 @@ const FileBrowserFolderDetail = ({
           {configurationPaths.length === 1 ? (
             informationByPath[configurationPaths[0]].name
           ) : (
-            'PLACEHOLDER'
+            informationByPath[selected].name
+            
           )}
         </div>
       </div>
@@ -126,7 +128,7 @@ const FileBrowserFolderDetail = ({
           {configurationPaths.length === 1 ? (
             informationByPath[configurationPaths[0]].version
           ) : (
-            'PLACEHOLDER'
+            informationByPath[selected].version
           )}
         </div>
       </div>
