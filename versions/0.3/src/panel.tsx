@@ -87,7 +87,10 @@ const FileBrowserFolderDetail = ({
 }: {
   informationByPath: any;
 }) => {
-  if (informationByPath === undefined) {
+  if (
+    informationByPath === undefined ||
+    !Object.keys(informationByPath).length
+  ) {
     return null;
   }
   const configurationPaths = Object.keys(informationByPath);
@@ -110,26 +113,25 @@ const FileBrowserFolderDetail = ({
       <div>
         <div>Configuration Name</div>
         <div>
-          Name:
           {configurationPaths.length === 1 ? (
             informationByPath[configurationPaths[0]].name
           ) : (
-              {/* {configurationPaths.map(path => (
-                <option>{path}</option>
-              ))} */}
-          )}
-        </div>
-        <div>
-          Version:
-          {configurationPaths.length === 1 ? (
-            informationByPath[configurationPaths[0]].version
-          ) : (
-              {/* {configurationPaths.map(path => (
-                <option>{path}</option>
-              ))} */}
+            'PLACEHOLDER'
           )}
         </div>
       </div>
+      <div>
+        <div>Configuration Version</div>
+        <div>
+          {configurationPaths.length === 1 ? (
+            informationByPath[configurationPaths[0]].version
+          ) : (
+            'PLACEHOLDER'
+          )}
+        </div>
+      </div>
+      <button>Launch</button>
+      <button>Stop</button>
     </>
   );
 };
