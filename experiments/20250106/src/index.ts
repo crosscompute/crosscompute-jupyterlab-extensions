@@ -1,4 +1,5 @@
 import {
+  ILabShell,
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
@@ -20,12 +21,16 @@ const plugin: JupyterFrontEndPlugin<void> = {
   id: 'myextension:plugin',
   description: 'A JupyterLab extension.',
   autoStart: true,
-  activate: (app: JupyterFrontEnd) => {
+  requires: [ILabShell],
+  activate: (app: JupyterFrontEnd, labShell: ILabShell) => {
     const { shell } = app;
     const panel = new Panel();
     panel.id = 'myextension-panel';
     panel.title.icon = logoIcon;
     shell.add(panel, 'right', { rank: 700 });
+    labShell.currentPathChanged.connect((sender, args) => {
+      console.log(args.newValue);
+    });
 
     console.log('JupyterLab extension myextension is activated!');
 
