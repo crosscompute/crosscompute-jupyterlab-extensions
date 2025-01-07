@@ -2,6 +2,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
+import { Panel } from '@lumino/widgets';
 
 import { requestAPI } from './handler';
 
@@ -13,6 +14,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
   description: 'A JupyterLab extension.',
   autoStart: true,
   activate: (app: JupyterFrontEnd) => {
+    const { shell } = app;
+    const panel = new Panel();
+    panel.id = 'myextension-panel';
+    shell.add(panel, 'right', { rank: 700 });
+
     console.log('JupyterLab extension myextension is activated!');
 
     requestAPI<any>('get-example')
