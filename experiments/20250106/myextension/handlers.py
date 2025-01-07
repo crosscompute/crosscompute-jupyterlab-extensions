@@ -11,7 +11,7 @@ class RouteHandler(APIHandler):
     @tornado.web.authenticated
     def get(self):
         self.finish(json.dumps({
-            "data": "This is /myextension/get-example endpoint!"
+            "abc": "whee"
         }))
 
 

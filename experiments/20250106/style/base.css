@@ -3,3 +3,10 @@
 
     https://jupyterlab.readthedocs.io/en/stable/developer/css.html
 */
+.crosscompute-Link {
+  color: var(--jp-content-link-color);
+}
+.crosscompute-Link:hover {
+  color: var(--jp-content-link-color);
+  text-decoration: underline;
+}

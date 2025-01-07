@@ -4,6 +4,7 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 import { IDefaultFileBrowser } from '@jupyterlab/filebrowser';
+import { IDocumentManager } from '@jupyterlab/docmanager';
 
 import { requestAPI } from './handler';
 import { CrossComputePanel } from './panel';
@@ -15,14 +16,16 @@ const plugin: JupyterFrontEndPlugin<void> = {
   id: 'myextension:plugin',
   description: 'A JupyterLab extension.',
   autoStart: true,
-  requires: [ILabShell, IDefaultFileBrowser],
+  requires: [ILabShell, IDefaultFileBrowser, IDocumentManager],
   activate: (
     app: JupyterFrontEnd,
     labShell: ILabShell,
-    fileBrowser: IDefaultFileBrowser
+    fileBrowser: IDefaultFileBrowser,
+    documentManager: IDocumentManager
   ) => {
     const { shell } = app;
-    const panel: CrossComputePanel = new CrossComputePanel();
+    const openPath = (path: string) => documentManager.openOrReveal(path);
+    const panel: CrossComputePanel = new CrossComputePanel(openPath);
     shell.add(panel, 'right', { rank: 700 });
     labShell.currentPathChanged.connect((sender, args) => {
       console.log(args.newValue);
