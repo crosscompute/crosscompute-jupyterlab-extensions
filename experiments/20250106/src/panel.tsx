@@ -17,8 +17,8 @@ export class CrossComputePanel extends ReactWidget {
       <UseSignal signal={this.model.changed}>
         {(): JSX.Element => (
           <>
-            <div>{this.model.labShellPath}</div>
-            <div>{this.model.fileBrowserFolder}</div>
+            <div>labShellPath = {this.model.labShellPath}</div>
+            <div>fileBrowserFolder = {this.model.fileBrowserFolder}</div>
           </>
         )}
       </UseSignal>
