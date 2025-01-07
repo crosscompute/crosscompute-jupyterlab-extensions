@@ -15,7 +15,12 @@ export class CrossComputePanel extends ReactWidget {
   render(): JSX.Element {
     return (
       <UseSignal signal={this.model.changed}>
-        {(): JSX.Element => <>{this.model.labShellPath}</>}
+        {(): JSX.Element => (
+          <>
+            <div>{this.model.labShellPath}</div>
+            <div>{this.model.fileBrowserFolder}</div>
+          </>
+        )}
       </UseSignal>
     );
   }

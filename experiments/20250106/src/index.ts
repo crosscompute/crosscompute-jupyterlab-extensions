@@ -3,6 +3,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
+import { IDefaultFileBrowser } from '@jupyterlab/filebrowser';
 
 import { requestAPI } from './handler';
 import { CrossComputePanel } from './panel';
@@ -14,14 +15,21 @@ const plugin: JupyterFrontEndPlugin<void> = {
   id: 'myextension:plugin',
   description: 'A JupyterLab extension.',
   autoStart: true,
-  requires: [ILabShell],
-  activate: (app: JupyterFrontEnd, labShell: ILabShell) => {
+  requires: [ILabShell, IDefaultFileBrowser],
+  activate: (
+    app: JupyterFrontEnd,
+    labShell: ILabShell,
+    fileBrowser: IDefaultFileBrowser
+  ) => {
     const { shell } = app;
     const panel: CrossComputePanel = new CrossComputePanel();
     shell.add(panel, 'right', { rank: 700 });
     labShell.currentPathChanged.connect((sender, args) => {
       console.log(args.newValue);
       panel.model.labShellPath = args.newValue;
+    });
+    fileBrowser.model.pathChanged.connect((sender, args) => {
+      panel.model.fileBrowserFolder = args.newValue;
     });
 
     console.log('JupyterLab extension myextension is activated!');
