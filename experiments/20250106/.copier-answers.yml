@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.3.7
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: support+jupyterlab@crosscompute.com
+author_name: CrossCompute Inc.
+has_binder: false
+has_settings: false
+kind: server
+labextension_name: myextension
+project_short_description: A JupyterLab extension.
+python_name: myextension
+repository: ''
+test: false
+
