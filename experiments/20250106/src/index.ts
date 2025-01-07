@@ -21,6 +21,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     shell.add(panel, 'right', { rank: 700 });
     labShell.currentPathChanged.connect((sender, args) => {
       console.log(args.newValue);
+      panel.model.labShellPath = args.newValue;
     });
 
     console.log('JupyterLab extension myextension is activated!');
