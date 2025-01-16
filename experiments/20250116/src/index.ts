@@ -2,6 +2,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
+import { Widget } from '@lumino/widgets';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
@@ -14,6 +15,10 @@ const plugin: JupyterFrontEndPlugin<void> = {
   optional: [ISettingRegistry],
   activate: (app: JupyterFrontEnd, settingRegistry: ISettingRegistry | null) => {
     console.log('JupyterLab extension jupyterlab-crosscompute is activated!');
+    const panel = new Widget();
+    panel.id = 'crosscompute-sidebar';
+    // panel.title.icon =
+    app.shell.add(panel, 'right', {rank: 727})
 
     if (settingRegistry) {
       settingRegistry
